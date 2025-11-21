@@ -2,7 +2,7 @@ name: 🚀 Deploy tsg-ai (Main / Production)
 
 on:
   push:
-    branches: [main1]
+    branches: [main]
 
 jobs:
   deploy-backend:

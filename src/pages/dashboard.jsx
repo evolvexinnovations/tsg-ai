@@ -6,7 +6,6 @@ import ChatInput from "../components/chatinput";
 import Sidebar from "../components/sidebar";
 import { ChatContext } from "../context/chatcontext";
 import ModelSelector from "../components/modelselector";
-import AppSelector from "../components/appselector";
 
 export default function Dashboard() {
   const { messages, currentChat } = useContext(ChatContext);
@@ -55,7 +54,6 @@ export default function Dashboard() {
                 flexShrink: 0,
               }}
             >
-              <AppSelector />
               <ModelSelector />
             </Box>
           </Toolbar>

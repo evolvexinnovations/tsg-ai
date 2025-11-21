@@ -3,7 +3,6 @@ import React from "react";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import AppSelector from "./appselector";
 import ModelSelector from "./modelselector";
 
 export default function Header() {
@@ -40,7 +39,6 @@ export default function Header() {
           flexShrink: 0,
         }}
       >
-        <AppSelector />
         <ModelSelector />
       </Box>
 

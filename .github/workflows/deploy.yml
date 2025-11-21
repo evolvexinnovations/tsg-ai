@@ -2,7 +2,7 @@ name: 🚀 Deploy tsg-ai (Main / Production)
 
 on:
   push:
-    branches: [main1]
+    branches: [main]
 
 jobs:
   deploy-backend:
@@ -190,4 +190,5 @@ jobs:
 
       - name: ✅ Frontend deployment complete
         run: echo "🎉 Evolvex Production frontend deployed successfully!"
+
 

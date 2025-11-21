@@ -12,7 +12,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Verify credentials with Skillgenie database
     const skillgenieUser = await verifySkillgenieUser(identifier, password);
 
     if (!skillgenieUser) {
@@ -22,8 +21,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Get subscription information from Skillgenie subscriptions table
-    // skillgenieUser.id is the UUID from users.id, which links to subscriptions.user_id
     console.log("Checking subscription for user ID:", skillgenieUser.id);
     const subscription = await checkSkillgenieSubscription(skillgenieUser.id);
 
@@ -34,11 +31,7 @@ export const login = async (req, res) => {
         message: "Access denied. Valid 3 or 6 month subscription required.",
       });
     }
-    
-    console.log("Subscription validated:", subscription);
 
-    // Subscription validation is already done in checkSkillgenieSubscription
-    // Additional check for expiration
     const now = new Date();
     const endDate = subscription.end_date ? new Date(subscription.end_date) : null;
 
@@ -58,8 +51,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // No need to store in local database - we check Skillgenie database directly
-    // Generate JWT token with user info
     const token = jwt.sign(
       {
         email: normalizedEmail,
@@ -104,17 +95,15 @@ export const verifyToken = async (req, res) => {
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
 
-    // Verify subscription directly from Skillgenie database
     const subscription = await checkSkillgenieSubscription(decoded.skillgenieUserId);
 
     if (!subscription) {
       return res.json({ valid: false });
     }
 
-    // Check if subscription is expired
     const now = new Date();
     const endDate = subscription.end_date ? new Date(subscription.end_date) : null;
-    
+
     if (endDate && endDate <= now) {
       return res.json({ valid: false });
     }
@@ -132,4 +121,3 @@ export const verifyToken = async (req, res) => {
     res.json({ valid: false });
   }
 };
-

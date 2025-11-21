@@ -4,11 +4,11 @@ Description: Evolvex Auth backend using AWS SAM and Node.js 18
 
 Globals:
   Function:
+    Runtime: nodejs18.x
     Timeout: 15
     MemorySize: 512
-    Tracing: Active
-    Runtime: nodejs18.x
     AutoPublishAlias: live
+    Tracing: Active
     CodeUri: .
     Environment:
       Variables:
@@ -37,25 +37,26 @@ Resources:
         AllowHeaders: "'Content-Type,Authorization,X-Requested-With'"
         AllowOrigin: "'*'"
 
-  # -------------------- ONLY AUTH FUNCTION --------------------
   AuthFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: function/AuthRoute/app.handler
       Events:
-        LoginUser:
+        Login:
           Type: Api
           Properties:
             Path: /login
             Method: POST
             RestApiId: !Ref EvolvexApi
+
         LoginAlias:
           Type: Api
           Properties:
             Path: /auth/login
             Method: POST
             RestApiId: !Ref EvolvexApi
-        VerifyToken:
+
+        Verify:
           Type: Api
           Properties:
             Path: /auth/verify
@@ -64,5 +65,5 @@ Resources:
 
 Outputs:
   ApiUrl:
-    Description: Auth API endpoint
+    Description: Evolvex Auth API base URL
     Value: !Sub "https://${EvolvexApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"

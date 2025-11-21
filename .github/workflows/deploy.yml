@@ -34,7 +34,7 @@ jobs:
           aws-region: ap-south-1
 
       - name: 🧭 Debug folder structure
-        run: ls -la && ls -la backend
+        run: ls -R .
 
       - name: 🧪 Validate SAM template
         working-directory: backend
@@ -44,17 +44,37 @@ jobs:
         working-directory: backend
         run: sam build
 
-      - name: 🪣 Ensure S3 bucket exists
+      # ---------------------------------------------
+      # FIX: Ensure S3 deployment bucket is ap-south-1
+      # ---------------------------------------------
+      - name: 🪣 Ensure S3 bucket exists in ap-south-1
         run: |
           BUCKET=${{ secrets.AWS_S3_BUCKET }}
           REGION=ap-south-1
+
+          echo "🔍 Checking if bucket $BUCKET exists..."
+
           if ! aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
-            echo "🚀 Creating missing bucket: $BUCKET"
-            aws s3 mb "s3://$BUCKET" --region "$REGION"
+            echo "🚀 Bucket missing. Creating: $BUCKET in $REGION"
+            aws s3api create-bucket \
+              --bucket "$BUCKET" \
+              --region "$REGION" \
+              --create-bucket-configuration LocationConstraint="$REGION"
           else
-            echo "✅ Bucket $BUCKET exists."
+            echo "✅ Bucket exists. Verifying region..."
+
+            B_REGION=$(aws s3api get-bucket-location --bucket "$BUCKET" --query "LocationConstraint" --output text)
+            if [ "$B_REGION" != "$REGION" ]; then
+              echo "❌ ERROR: Bucket region mismatch. Bucket is in $B_REGION, but stack is in $REGION."
+              exit 1
+            fi
+
+            echo "🌍 Bucket region validated."
           fi
 
+      # ---------------------------------------------
+      # CloudFormation Rollback Fix
+      # ---------------------------------------------
       - name: 🧯 Handle CloudFormation rollback (if needed)
         run: |
           STACK_NAME=tsg-ai-main
@@ -68,31 +88,15 @@ jobs:
           echo "📦 Stack status: $STATUS"
 
           if [ "$STATUS" = "UPDATE_ROLLBACK_FAILED" ]; then
-            echo "🧰 Continuing rollback..."
+            echo "🔄 Continuing rollback..."
             aws cloudformation continue-update-rollback --stack-name "$STACK_NAME" --region "$REGION"
           elif [ "$STATUS" = "ROLLBACK_COMPLETE" ]; then
-            echo "🔨 Deleting rolled-back stack..."
+            echo "🗑 Deleting failed stack..."
             aws cloudformation delete-stack --stack-name "$STACK_NAME" --region "$REGION"
             aws cloudformation wait stack-delete-complete --stack-name "$STACK_NAME" --region "$REGION"
-            echo "✅ Stack deleted successfully."
+            echo "🧹 Stack deleted."
           else
-            echo "✅ No rollback action required."
-          fi
-
-      - name: 🩵 Check and create stack if not exists
-        run: |
-          STACK_NAME=tsg-ai-main
-          REGION=ap-south-1
-          EXISTS=$(aws cloudformation describe-stacks \
-            --stack-name "$STACK_NAME" \
-            --region "$REGION" \
-            --query "Stacks[0].StackName" \
-            --output text 2>/dev/null || echo "NONE")
-
-          if [ "$EXISTS" = "NONE" ]; then
-            echo "🆕 Stack $STACK_NAME does not exist — will be created on first sam deploy."
-          else
-            echo "✅ Stack $STACK_NAME already exists."
+            echo "👌 No rollback needed."
           fi
 
       - name: 🚀 Deploy backend to Main
@@ -105,71 +109,42 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --region ap-south-1 \
             --s3-bucket ${{ secrets.AWS_S3_BUCKET }} \
-            --resolve-image-repos \
             --force-upload \
             --parameter-overrides \
-              "DBHost=${{ secrets.DB_HOST }}" \
-              "DBUser=${{ secrets.DB_USER }}" \
-              "DBPassword=${{ secrets.DB_PASS }}" \
-              "DBName=${{ secrets.DB_NAME }}" \
-              "AWSBucketName=${{ secrets.AWS_S3_BUCKET }}" \
               "JWTSecret=${{ secrets.JWT_SECRET }}" \
-              "JWTExpires=${{ secrets.JWT_EXPIRES }}" \
-              "AWSRegion=ap-south-1"
+              "JWTExpires=${{ secrets.JWT_EXPIRES }}"
 
       - name: ✅ Confirm backend deployment
         run: echo "🎉 Backend deployed successfully to tsg-ai Main!"
 
-      - name: 📋 Show CloudFormation errors (if any)
-        if: always()
-        continue-on-error: true
-        run: |
-          echo "🧾 Fetching CloudFormation stack events for debugging..."
-          STACK_NAME=tsg-ai-main
-          REGION=ap-south-1
-          EXISTS=$(aws cloudformation describe-stacks \
-            --stack-name "$STACK_NAME" \
-            --region "$REGION" \
-            --query "Stacks[0].StackName" \
-            --output text 2>/dev/null || echo "NONE")
-
-          if [ "$EXISTS" = "NONE" ]; then
-            echo "⚠️ Stack $STACK_NAME does not exist yet — skipping event fetch (likely first deployment)."
-          else
-            echo "📦 Stack found — fetching failed events..."
-            aws cloudformation describe-stack-events \
-              --stack-name "$STACK_NAME" \
-              --region "$REGION" \
-              --query "StackEvents[?ResourceStatus=='CREATE_FAILED' || ResourceStatus=='UPDATE_FAILED'].[LogicalResourceId,ResourceStatusReason]" \
-              --output table
-          fi
-
+  # -----------------------------------------------------------------
+  # FRONTEND DEPLOYMENT
+  # -----------------------------------------------------------------
   deploy-frontend:
     name: 🌐 Deploy tsg-ai Frontend (Main)
     runs-on: ubuntu-latest
     needs: deploy-backend
 
     steps:
-      - name: ⬇️ Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🧹 Clean installs
-        working-directory: frontend
-        run: |
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         working-directory: frontend
         run: npm install
 
-      - name: 🧱 Build frontend
+      - name: Build frontend
         working-directory: frontend
         run: |
           echo "🏗️ Building production build..."
           CI=false npm run build
 
-      - name: 🚚 Deploy to S3 (Main)
+      - name: Deploy to S3 (Frontend)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -177,18 +152,15 @@ jobs:
         working-directory: frontend
         run: aws s3 sync build/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
-      - name: 🔄 Invalidate CloudFront cache
+      - name: Invalidate CloudFront cache
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-south-1
         run: |
-          echo "♻️ Invalidating CloudFront cache..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
 
-      - name: ✅ Frontend deployment complete
-        run: echo "🎉 Evolvex Production frontend deployed successfully!"
-
-
+      - name: 🎉 Done
+        run: echo "Frontend deployed successfully!"

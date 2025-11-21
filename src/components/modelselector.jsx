@@ -1,5 +1,5 @@
 // src/components/ModelSelector.jsx
-import React, { useState } from "react";
+import React, { useContext, useMemo } from "react";
 import {
   Button,
   Menu,
@@ -8,18 +8,32 @@ import {
   ListItemText,
   Box,
 } from "@mui/material";
-import { MoreVert, SmartToy } from "@mui/icons-material";
+import { SmartToy } from "@mui/icons-material";
+import { ChatContext } from "../context/chatcontext.jsx";
+
+const MODEL_META = [
+  {
+    name: "TSG Model v1",
+    icon: "⚡",
+    desc: "Uses ChatGPT 3.5 Turbo",
+  },
+  {
+    name: "TSG Plus",
+    icon: "✨",
+    desc: "Powered by GPT-4o Mini",
+  },
+  {
+    name: "TSG Pro",
+    icon: "🧠",
+    desc: "Full GPT-4 performance",
+  },
+];
 
 export default function ModelSelector() {
-  const [selected, setSelected] = useState("TSG Model v1");
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { selectedModel, setSelectedModel } = useContext(ChatContext);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const models = [
-    { name: "TSG Model v1", icon: "⚡", desc: "Fast & affordable" },
-    { name: "TSG Model v2", icon: "🚀", desc: "Most powerful" },
-    { name: "TSG Model Pro", icon: "🧠", desc: "Creative responses" },
-    { name: "TSG Model Plus", icon: "✨", desc: "Advanced AI" },
-  ];
+  const models = useMemo(() => MODEL_META, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +44,7 @@ export default function ModelSelector() {
   };
 
   const handleSelect = (modelName) => {
-    setSelected(modelName);
+    setSelectedModel(modelName);
     handleClose();
   };
 
@@ -52,7 +66,7 @@ export default function ModelSelector() {
         }}
         startIcon={<SmartToy sx={{ color: "#b366ff" }} />}
       >
-        <span style={{ fontSize: "14px" }}>{selected}</span>
+        <span style={{ fontSize: "14px" }}>{selectedModel}</span>
       </Button>
 
       <Menu
@@ -72,9 +86,10 @@ export default function ModelSelector() {
           <MenuItem
             key={model.name}
             onClick={() => handleSelect(model.name)}
-            selected={selected === model.name}
+            selected={selectedModel === model.name}
             sx={{
-              bgcolor: selected === model.name ? "rgba(179, 102, 255, 0.2)" : "transparent",
+              bgcolor:
+                selectedModel === model.name ? "rgba(179, 102, 255, 0.2)" : "transparent",
               "&:hover": { bgcolor: "rgba(179, 102, 255, 0.15)" },
               py: 1.5,
             }}
@@ -88,7 +103,7 @@ export default function ModelSelector() {
               primaryTypographyProps={{ sx: { fontSize: "14px", fontWeight: 500 } }}
               secondaryTypographyProps={{ sx: { fontSize: "12px", color: "#888" } }}
             />
-            {selected === model.name && (
+            {selectedModel === model.name && (
               <span style={{ marginLeft: "10px", color: "#4ade80", fontWeight: "bold" }}>✓</span>
             )}
           </MenuItem>

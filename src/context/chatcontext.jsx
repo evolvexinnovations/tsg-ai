@@ -3,6 +3,23 @@ import { OPENAI_API_KEY } from "../config/apiKey.js";
 
 export const ChatContext = createContext();
 
+const MODEL_CONFIG = {
+  "TSG Model v1": {
+    id: "gpt-3.5-turbo",
+    desc: "Fast & default",
+  },
+  "TSG Plus": {
+    id: "gpt-4o-mini",
+    desc: "Balanced power",
+  },
+  "TSG Pro": {
+    id: "gpt-4",
+    desc: "Maximum reasoning",
+  },
+};
+const MODEL_STORAGE_KEY = "corporate_ai_model";
+const DEFAULT_MODEL = "TSG Model v1";
+
 // 🎯 Generate meaningful title from message content
 const generateChatTitle = (content) => {
   if (!content || content.trim().length === 0) return "New Chat";
@@ -60,6 +77,25 @@ export const ChatProvider = ({ children }) => {
     const chat = allChats.find((c) => c.id === Number(savedCurrentChat));
     return chat?.messages || [];
   });
+
+  // Model selection state
+  const [selectedModel, setSelectedModel] = useState(() => {
+    try {
+      return localStorage.getItem(MODEL_STORAGE_KEY) || DEFAULT_MODEL;
+    } catch {
+      return DEFAULT_MODEL;
+    }
+  });
+
+  const updateSelectedModel = (modelName) => {
+    if (!MODEL_CONFIG[modelName]) return;
+    setSelectedModel(modelName);
+    try {
+      localStorage.setItem(MODEL_STORAGE_KEY, modelName);
+    } catch {
+      // Ignore storage errors
+    }
+  };
 
   // 🧠 NEW: processing state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -199,6 +235,9 @@ export const ChatProvider = ({ children }) => {
           }),
         ];
 
+        const targetModel =
+          MODEL_CONFIG[selectedModel]?.id || MODEL_CONFIG[DEFAULT_MODEL].id;
+
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -206,7 +245,7 @@ export const ChatProvider = ({ children }) => {
             Authorization: `Bearer ${OPENAI_API_KEY}`,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: targetModel,
             messages: conversationMessages,
             temperature: 0.7,
             max_tokens: 800,
@@ -297,6 +336,10 @@ export const ChatProvider = ({ children }) => {
         // 👇 new states for spinner
         isProcessing,
         processingMessage,
+        // model controls
+        selectedModel,
+        setSelectedModel: updateSelectedModel,
+        modelOptions: MODEL_CONFIG,
       }}
     >
       {children}

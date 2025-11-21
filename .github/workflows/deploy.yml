@@ -101,7 +101,7 @@ jobs:
           sam deploy --debug \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --stack-name evolvex-main \
+            --stack-name tsg-ai-main \
             --capabilities CAPABILITY_IAM \
             --region ap-south-1 \
             --s3-bucket ${{ secrets.AWS_S3_BUCKET }} \
@@ -190,3 +190,5 @@ jobs:
 
       - name: ✅ Frontend deployment complete
         run: echo "🎉 Evolvex Production frontend deployed successfully!"
+
+

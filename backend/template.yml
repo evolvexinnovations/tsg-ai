@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Evolvex Auth backend using AWS SAM and Node.js 18
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 512
+    Tracing: Active
+    Runtime: nodejs18.x
+    AutoPublishAlias: live
+    CodeUri: .
+    Environment:
+      Variables:
+        JWT_SECRET: !Ref JWTSecret
+        JWT_EXPIRES: !Ref JWTExpires
+
+  Api:
+    Cors:
+      AllowMethods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH'"
+      AllowHeaders: "'Content-Type,Authorization,X-Requested-With'"
+      AllowOrigin: "'*'"
+
+Parameters:
+  JWTSecret:
+    Type: String
+  JWTExpires:
+    Type: String
+
+Resources:
+  EvolvexApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH'"
+        AllowHeaders: "'Content-Type,Authorization,X-Requested-With'"
+        AllowOrigin: "'*'"
+
+  # -------------------- ONLY AUTH FUNCTION --------------------
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: function/AuthRoute/app.handler
+      Events:
+        LoginUser:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
+            RestApiId: !Ref EvolvexApi
+        LoginAlias:
+          Type: Api
+          Properties:
+            Path: /auth/login
+            Method: POST
+            RestApiId: !Ref EvolvexApi
+        VerifyToken:
+          Type: Api
+          Properties:
+            Path: /auth/verify
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+Outputs:
+  ApiUrl:
+    Description: Auth API endpoint
+    Value: !Sub "https://${EvolvexApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"

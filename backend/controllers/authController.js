@@ -28,7 +28,7 @@ export const login = async (req, res) => {
       console.log("No valid subscription found for user:", skillgenieUser.id);
       return res.status(403).json({
         success: false,
-        message: "Access denied. Valid 3 or 6 month subscription required.",
+        message: "Access denied. A valid 3-month or 6-month subscription is required.",
       });
     }
 

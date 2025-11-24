@@ -324,11 +324,13 @@ export const checkSkillgenieSubscription = async (userId) => {
       }
     }
 
+    // Only allow 3-month or 6-month subscriptions
     if (!is3Months && !is6Months) {
       console.log("No valid 3 or 6 month subscription found. Plan name:", planName);
-      return null; // Not a valid 3 or 6 month subscription
+      return null; // Not a valid 3 or 6 month subscription - access denied
     }
     
+    // Both 3-month and 6-month subscriptions are allowed
     console.log("Valid subscription found:", is6Months ? "6 months" : "3 months");
 
     // Check if subscription is active and not expired

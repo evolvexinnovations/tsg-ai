@@ -63,6 +63,39 @@ Resources:
             Method: GET
             RestApiId: !Ref EvolvexApi
 
+  SubscriptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: function/SubscriptionRoute/app.handler
+      Events:
+        PaymentHistory:
+          Type: Api
+          Properties:
+            Path: /subscriptions/payment-history
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+        PaymentHistoryAlias:
+          Type: Api
+          Properties:
+            Path: /api/subscriptions/payment-history
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+        CurrentSubscription:
+          Type: Api
+          Properties:
+            Path: /subscriptions/current
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+        CurrentSubscriptionAlias:
+          Type: Api
+          Properties:
+            Path: /api/subscriptions/current
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
 Outputs:
   ApiUrl:
     Description: Evolvex Auth API base URL

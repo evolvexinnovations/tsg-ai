@@ -1,13 +1,15 @@
 // src/components/Header.jsx
 import React from "react";
 import { Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import ModelSelector from "./modelselector";
+import PaymentIcon from "@mui/icons-material/Payment";
 
 export default function Header() {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -16,6 +18,12 @@ export default function Header() {
       navigate("/thank-you", { replace: true });
     }, 100);
   };
+
+  const handleSubscriptionsClick = () => {
+    navigate("/subscriptions");
+  };
+
+  const isSubscriptionsPage = location.pathname === "/subscriptions";
 
   return (
     <header
@@ -39,7 +47,25 @@ export default function Header() {
           flexShrink: 0,
         }}
       >
-        <ModelSelector />
+        {isSubscriptionsPage ? (
+          <Button
+            onClick={() => navigate("/")}
+            variant="outlined"
+            size="small"
+            sx={{
+              color: "#5eead4",
+              borderColor: "#5eead4",
+              "&:hover": {
+                borderColor: "#2dd4bf",
+                bgcolor: "rgba(94, 234, 212, 0.1)",
+              },
+            }}
+          >
+            Back to Chat
+          </Button>
+        ) : (
+          <ModelSelector />
+        )}
       </Box>
 
       {/* Expanding space in the middle */}
@@ -66,6 +92,24 @@ export default function Header() {
           >
             <span>{user.email}</span>
           </Box>
+        )}
+        {!isSubscriptionsPage && (
+          <Button
+            onClick={handleSubscriptionsClick}
+            variant="outlined"
+            size="small"
+            startIcon={<PaymentIcon />}
+            sx={{
+              color: "#5eead4",
+              borderColor: "#5eead4",
+              "&:hover": {
+                borderColor: "#2dd4bf",
+                bgcolor: "rgba(94, 234, 212, 0.1)",
+              },
+            }}
+          >
+            Subscriptions
+          </Button>
         )}
         <h1
           style={{

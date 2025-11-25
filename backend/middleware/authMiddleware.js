@@ -33,7 +33,10 @@ export const authenticate = async (req, res, next) => {
       });
     }
 
-    req.user = user;
+    req.user = {
+      ...user,
+      skillgenie_user_id: decoded.skillgenieUserId || user.skillgenie_user_id,
+    };
     next();
   } catch (error) {
     if (error.name === "JsonWebTokenError") {

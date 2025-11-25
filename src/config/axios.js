@@ -6,11 +6,15 @@ import axios from "axios";
 // 
 // Examples:
 // - Production domain: https://api.tsg-ai.com
-// - AWS API Gateway: https://<api-id>.execute-api.ap-south-1.amazonaws.com/Prod
+// - AWS API Gateway (Prod): https://<api-id>.execute-api.ap-south-1.amazonaws.com/Prod
+// - AWS API Gateway (Dev): https://<api-id>.execute-api.ap-south-1.amazonaws.com/Dev
 // - Local development: http://localhost:5000
 //
 // To find your AWS API Gateway URL, check the CloudFormation stack outputs
 // or run: aws cloudformation describe-stacks --stack-name tsg-ai-main --query "Stacks[0].Outputs"
+//
+// For development, create a .env file in the root directory with:
+// REACT_APP_API_URL=https://<api-id>.execute-api.ap-south-1.amazonaws.com/Dev
 const API_URL = process.env.REACT_APP_API_URL || "https://api.tsg-ai.com";
 
 const axiosInstance = axios.create({

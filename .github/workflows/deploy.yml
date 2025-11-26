@@ -112,7 +112,13 @@ jobs:
             --force-upload \
             --parameter-overrides \
               "JWTSecret=${{ secrets.JWT_SECRET }}" \
-              "JWTExpires=${{ secrets.JWT_EXPIRES }}"
+              "JWTExpires=${{ secrets.JWT_EXPIRES }}" \
+              "DBHost=${{ secrets.DB_HOST }}" \
+              "DBUser=${{ secrets.DB_USER }}" \
+              "DBPassword=${{ secrets.DB_PASSWORD }}" \
+              "DBName=${{ secrets.DB_NAME }}" \
+              "DBPort=5432" \
+              "DBSSL=true"
 
       - name: ✅ Confirm backend deployment
         run: echo "🎉 Backend deployed successfully to tsg-ai Main!"

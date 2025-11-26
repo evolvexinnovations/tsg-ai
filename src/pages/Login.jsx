@@ -11,7 +11,8 @@ import {
   Paper,
 } from "@mui/material";
 import { useAuth } from "../context/authContext";
-import logo from "../assets/logo.png";
+// Logo is in public folder for production builds
+const logo = "/logo.png";
 
 export default function Login() {
   const [identifier, setIdentifier] = useState("");

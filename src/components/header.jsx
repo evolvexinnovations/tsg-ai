@@ -4,7 +4,8 @@ import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import ModelSelector from "./modelselector";
-import logo from "../assets/logo.png";
+// Logo is in public folder for production builds
+const logo = "/logo.png";
 
 export default function Header() {
   const { logout, user } = useAuth();

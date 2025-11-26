@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import ModelSelector from "./modelselector";
+import logo from "../assets/logo.png";
 
 export default function Header() {
   const { logout, user } = useAuth();
@@ -67,18 +68,22 @@ export default function Header() {
             <span>{user.email}</span>
           </Box>
         )}
-        <h1
-          style={{
-            color: "#5eead4", // bright teal accent
-            fontSize: "1.25rem",
-            fontWeight: 700,
-            letterSpacing: "0.6px",
-            textShadow: "0 0 8px rgba(94, 234, 212, 0.4)", // soft teal glow
-            margin: 0,
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
           }}
         >
-          TSG AI
-        </h1>
+          <img
+            src={logo}
+            alt="TSG AI"
+            style={{
+              height: "32px",
+              width: "auto",
+            }}
+          />
+        </Box>
         <Button
           onClick={handleLogout}
           variant="outlined"

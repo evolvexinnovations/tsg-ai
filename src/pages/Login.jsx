@@ -11,6 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useAuth } from "../context/authContext";
+import logo from "../assets/logo.png";
 
 export default function Login() {
   const [identifier, setIdentifier] = useState("");
@@ -87,17 +88,22 @@ export default function Login() {
           }}
         >
           <Box sx={{ textAlign: "center", mb: 3 }}>
-            <Typography
-              variant="h4"
+            <Box
               sx={{
-                color: "#5eead4",
-                fontWeight: 700,
-                mb: 1,
-                textShadow: "0 0 8px rgba(94, 234, 212, 0.4)",
+                display: "flex",
+                justifyContent: "center",
+                mb: 2,
               }}
             >
-              TSG AI
-            </Typography>
+              <img
+                src={logo}
+                alt="TSG AI"
+                style={{
+                  height: "60px",
+                  width: "auto",
+                }}
+              />
+            </Box>
             <Typography variant="body2" sx={{ color: "grey.400" }}>
               Sign in with your Skillgenie email or username
             </Typography>

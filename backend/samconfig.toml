@@ -17,16 +17,7 @@ s3_bucket = ""  # Set your S3 bucket name here
 s3_prefix = "tsg-ai-main"
 image_repositories = []
 
-[default.deploy.parameters.parameter_overrides]
-# JWT Parameters
-JWTSecret = ""  # Set via GitHub Secrets: JWT_SECRET
-JWTExpires = "7d"
-
-# Database Parameters - MUST be set via GitHub Secrets in CI/CD
-DBHost = ""  # Set via GitHub Secrets: DB_HOST
-DBUser = ""  # Set via GitHub Secrets: DB_USER
-DBPassword = ""  # Set via GitHub Secrets: DB_PASSWORD
-DBName = ""  # Set via GitHub Secrets: DB_NAME
-DBPort = "5432"
-DBSSL = "true"
+# Note: All parameters (JWTSecret, JWTExpires, DBHost, DBUser, DBPassword, DBName, DBPort, DBSSL)
+# are provided via command-line --parameter-overrides in the GitHub Actions workflow.
+# Do not set them here to avoid conflicts.
 

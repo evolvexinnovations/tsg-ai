@@ -11,11 +11,11 @@ parallel = true
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = false
-resolve_s3 = true
 region = "ap-south-1"
-s3_bucket = ""  # Set your S3 bucket name here
+s3_bucket = ""  # Set your S3 bucket name here (overridden by --s3-bucket in workflow)
 s3_prefix = "tsg-ai-main"
 image_repositories = []
+# Note: resolve_s3 is not set because --s3-bucket is explicitly provided in the workflow
 
 # Note: All parameters (JWTSecret, JWTExpires, DBHost, DBUser, DBPassword, DBName, DBPort, DBSSL)
 # are provided via command-line --parameter-overrides in the GitHub Actions workflow.

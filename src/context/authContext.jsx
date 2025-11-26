@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem("authToken");
         if (token) {
           // Verify token with backend
-          const response = await axiosInstance.get("/api/auth/verify");
+          const response = await axiosInstance.get("/auth/verify");
           if (response.data.valid) {
             setUser(response.data.user);
             setIsAuthenticated(true);
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password) => {
     try {
       console.log("Attempting login with:", identifier);
-      const response = await axiosInstance.post("/api/auth/login", { identifier, password });
+      const response = await axiosInstance.post("/auth/login", { identifier, password });
       console.log("Login response:", response.data);
 
       if (response.data.success) {

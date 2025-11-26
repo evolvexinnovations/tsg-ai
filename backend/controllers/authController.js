@@ -1,4 +1,4 @@
-import { verifySkillgenieUser, checkSkillgenieSubscription } from "../models/skillgenieModel.js";
+import { verifySkillgenieUser } from "../models/skillgenieModel.js";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
@@ -18,27 +18,6 @@ export const login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
-      });
-    }
-
-    console.log("Checking subscription for user ID:", skillgenieUser.id);
-    const subscription = await checkSkillgenieSubscription(skillgenieUser.id);
-
-    if (!subscription) {
-      console.log("No valid subscription found for user:", skillgenieUser.id);
-      return res.status(403).json({
-        success: false,
-        message: "Access denied. A valid 3-month or 6-month subscription is required.",
-      });
-    }
-
-    const now = new Date();
-    const endDate = subscription.end_date ? new Date(subscription.end_date) : null;
-
-    if (endDate && endDate <= now) {
-      return res.status(403).json({
-        success: false,
-        message: "Your subscription has expired. Please renew to continue.",
       });
     }
 
@@ -66,8 +45,6 @@ export const login = async (req, res) => {
       token,
       user: {
         email: normalizedEmail,
-        subscriptionType: subscription.type,
-        subscriptionEndDate: endDate,
       },
     });
   } catch (error) {
@@ -95,25 +72,10 @@ export const verifyToken = async (req, res) => {
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
 
-    const subscription = await checkSkillgenieSubscription(decoded.skillgenieUserId);
-
-    if (!subscription) {
-      return res.json({ valid: false });
-    }
-
-    const now = new Date();
-    const endDate = subscription.end_date ? new Date(subscription.end_date) : null;
-
-    if (endDate && endDate <= now) {
-      return res.json({ valid: false });
-    }
-
     res.json({
       valid: true,
       user: {
         email: decoded.email,
-        subscriptionType: subscription.type,
-        subscriptionEndDate: subscription.end_date,
       },
     });
   } catch (error) {

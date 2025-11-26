@@ -9,7 +9,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/dashboard";
 import ThankYou from "./pages/ThankYou";
-import Subscriptions from "./pages/Subscriptions";
 import { ChatContext } from "./context/chatcontext";
 
 function MainApp() {
@@ -66,25 +65,6 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/thank-you" element={<ThankYou />} />
-        <Route
-          path="/subscriptions"
-          element={
-            <ProtectedRoute>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100vh",
-                  bgcolor: "grey.900",
-                  color: "white",
-                }}
-              >
-                <Header />
-                <Subscriptions />
-              </Box>
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/"
           element={

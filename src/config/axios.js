@@ -1,24 +1,9 @@
 import axios from "axios";
+import API_BASE_URL from "./config.jsx";
 
-// API URL configuration
-// Option 1: Set REACT_APP_API_URL in .env file (recommended)
-// Option 2: Replace the default URL below with your actual API endpoint
-// 
-// Examples:
-// - Production domain: https://api.tsg-ai.com
-// - AWS API Gateway (Prod): https://<api-id>.execute-api.ap-south-1.amazonaws.com/Prod
-// - AWS API Gateway (Dev): https://<api-id>.execute-api.ap-south-1.amazonaws.com/Dev
-// - Local development: http://localhost:5000
-//
-// To find your AWS API Gateway URL, check the CloudFormation stack outputs
-// or run: aws cloudformation describe-stacks --stack-name tsg-ai-main --query "Stacks[0].Outputs"
-//
-// For development, create a .env file in the root directory with:
-// REACT_APP_API_URL=https://<api-id>.execute-api.ap-south-1.amazonaws.com/Dev
-const API_URL = process.env.REACT_APP_API_URL || "https://api.tsg-ai.com";
-
+// Use the central API base URL so all frontend requests go to the Lambda/API Gateway backend.
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

@@ -167,7 +167,7 @@ export default function Login() {
 
           <Box sx={{ mt: 3, textAlign: "center" }}>
             <Typography variant="caption" sx={{ color: "grey.500" }}>
-              Access requires a valid Skillgenie subscription (3 or 6 months)
+              Use your Skillgenie credentials to access TSG AI.
             </Typography>
           </Box>
         </Paper>

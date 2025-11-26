@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { getUserByEmail, hasValidSubscription } from "../models/userModel.js";
+import { getUserByEmail } from "../models/userModel.js";
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -23,13 +23,6 @@ export const authenticate = async (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: "User not found",
-      });
-    }
-
-    if (!hasValidSubscription(user)) {
-      return res.status(403).json({
-        success: false,
-        message: "Valid subscription required (3 or 6 months)",
       });
     }
 

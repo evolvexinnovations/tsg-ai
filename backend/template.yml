@@ -42,6 +42,13 @@ Resources:
     Properties:
       Handler: function/AuthRoute/app.handler
       Events:
+        LoginOptions:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: OPTIONS
+            RestApiId: !Ref EvolvexApi
+
         Login:
           Type: Api
           Properties:

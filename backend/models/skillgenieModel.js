@@ -104,3 +104,93 @@ async function processSkillgenieUser(user, columns, password) {
     username: usernameColumn ? user[usernameColumn] : null,
   };
 }
+
+// Check latest successful payment to decide access
+// Allowed: 7999 (3 months) or 14999 (6 months)
+// Anything else (e.g. 2999 for 1 month) => access denied
+export const checkSkillgenieAccess = async (userId) => {
+  try {
+    // 1) Get username from users table (Skillgenie DB)
+    const usersTable = process.env.SKILLGENIE_USERS_TABLE || "users";
+    const usersIdColumn = process.env.SKILLGENIE_ID_COLUMN || "id";
+    const usersUsernameColumn = process.env.SKILLGENIE_USERNAME_COLUMN || "user_id";
+
+    const userResult = await pool.query(
+      `SELECT ${usersUsernameColumn} FROM ${usersTable} WHERE ${usersIdColumn} = $1`,
+      [userId]
+    );
+
+    if (userResult.rows.length === 0) {
+      return { allowed: false, reason: "user_not_found" };
+    }
+
+    const username = userResult.rows[0][usersUsernameColumn];
+    if (!username) {
+      return { allowed: false, reason: "username_missing" };
+    }
+
+    // 2) Look up latest successful payment in payments table
+    const paymentsTable = process.env.SKILLGENIE_PAYMENTS_TABLE || "mock_interview_payments";
+    const paymentsUserIdColumn = process.env.SKILLGENIE_PAYMENT_USER_ID_COLUMN || "user_id";
+    const amountColumn = process.env.SKILLGENIE_AMOUNT_COLUMN || "amount";
+    const statusColumn = process.env.SKILLGENIE_STATUS_COLUMN || "status";
+    const startDateColumn = process.env.SKILLGENIE_START_DATE_COLUMN || "start_date";
+    const endDateColumn = process.env.SKILLGENIE_END_DATE_COLUMN || "end_date";
+    const paymentDateColumn = process.env.SKILLGENIE_PAYMENT_DATE_COLUMN || "created_at";
+
+    const paymentResult = await pool.query(
+      `SELECT ${amountColumn}, ${statusColumn}, ${startDateColumn}, ${endDateColumn}, ${paymentDateColumn}
+       FROM ${paymentsTable}
+       WHERE ${paymentsUserIdColumn} = $1
+         AND LOWER(${statusColumn}) = 'success'
+       ORDER BY ${paymentDateColumn} DESC
+       LIMIT 1`,
+      [username]
+    );
+
+    if (paymentResult.rows.length === 0) {
+      return { allowed: false, reason: "no_payments" };
+    }
+
+    const row = paymentResult.rows[0];
+
+    const rawAmount = row[amountColumn];
+    const amount = typeof rawAmount === "number" ? rawAmount : Number(rawAmount || 0);
+
+    let months = 0;
+    if (amount === 7999) {
+      months = 3;
+    } else if (amount === 14999) {
+      months = 6;
+    } else {
+      // Any other plan (e.g. 2999 for 1 month) is not allowed
+      return { allowed: false, reason: "unsupported_plan" };
+    }
+
+    // 3) Work out validity window
+    let startDate =
+      row[startDateColumn] ? new Date(row[startDateColumn]) : new Date(row[paymentDateColumn]);
+
+    let endDate = row[endDateColumn] ? new Date(row[endDateColumn]) : null;
+    if (!endDate) {
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + months);
+    }
+
+    const now = new Date();
+    if (endDate <= now) {
+      return { allowed: false, reason: "expired" };
+    }
+
+    return {
+      allowed: true,
+      months,
+      startDate,
+      endDate,
+      amount,
+    };
+  } catch (error) {
+    console.error("Error checking Skillgenie access:", error);
+    return { allowed: false, reason: "error" };
+  }
+};

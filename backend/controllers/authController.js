@@ -1,4 +1,4 @@
-import { verifySkillgenieUser } from "../models/skillgenieModel.js";
+import { verifySkillgenieUser, checkSkillgenieAccess } from "../models/skillgenieModel.js";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
@@ -18,6 +18,17 @@ export const login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
+      });
+    }
+
+    // Check payment-based access: only 7999 (3 months) or 14999 (6 months) plans allowed
+    const access = await checkSkillgenieAccess(skillgenieUser.id);
+
+    if (!access?.allowed) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Access denied. A valid 3-month (₹7,999) or 6-month (₹14,999) subscription is required.",
       });
     }
 
@@ -45,6 +56,8 @@ export const login = async (req, res) => {
       token,
       user: {
         email: normalizedEmail,
+        subscriptionMonths: access.months,
+        subscriptionEndDate: access.endDate,
       },
     });
   } catch (error) {
@@ -72,10 +85,19 @@ export const verifyToken = async (req, res) => {
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
 
+    // Re-check access on verify to ensure subscription is still valid
+    const access = await checkSkillgenieAccess(decoded.skillgenieUserId);
+
+    if (!access?.allowed) {
+      return res.json({ valid: false });
+    }
+
     res.json({
       valid: true,
       user: {
         email: decoded.email,
+        subscriptionMonths: access.months,
+        subscriptionEndDate: access.endDate,
       },
     });
   } catch (error) {

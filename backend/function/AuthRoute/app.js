@@ -20,8 +20,12 @@ app.use(express.json());
 
 // Routes
 app.options("/login", cors()); // handle preflight for /login
-app.options("/auth/login", cors()); // handle preflight for /auth/login if hit directly
+app.options("/auth/login", cors()); // handle preflight for /auth/login
+
+// Support both /login and /auth/login for compatibility with API mappings
 app.post("/login", login);
+app.post("/auth/login", login);
+
 app.get("/verify", verifyToken);
 
 // Export Lambda-compatible handler

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { OPENAI_API_KEY } from "../config/apiKey.js";
+import axiosInstance from "../config/axios";
 
 export const ChatContext = createContext();
 
@@ -191,77 +191,41 @@ export const ChatProvider = ({ children }) => {
       setIsProcessing(false);
       setProcessingMessage("");
 
-      // 🔄 Get real AI response from OpenAI
+      // 🔄 Get real AI response from backend API
       let aiReply = "";
       try {
-        if (!OPENAI_API_KEY || OPENAI_API_KEY === "sk-proj-") {
-          throw new Error(
-            "OpenAI API key not configured. Please add your key to src/config/apiKey.js"
-          );
-        }
-
-        // 📝 Build conversation history with token limit awareness
-        // Keep only last 10 messages to avoid token limits
+        // Build conversation history - send last user message and context
         const maxMessages = 10;
         const recentMessages = updatedMessages.slice(-maxMessages);
+        
+        // Get the last user message content
+        const lastUserMessage = recentMessages
+          .filter(msg => msg.role === "user")
+          .pop()?.content || msg.content;
 
-        const conversationMessages = [
-          {
-            role: "system",
-            content:
-              "You are TSG AI — a helpful assistant for developers and managers. Keep responses concise and helpful.",
-          },
-          // Include recent messages for context
-          ...recentMessages.map((msg) => {
-            // Truncate very long messages to avoid token limits
-            let content = msg.content;
-            const maxLength = 2000; // Limit message length
-            
-            if (content.length > maxLength) {
-              // Find if this is a file content
-              const fileMatch = content.match(/📄 File: (.+?)\n/);
-              if (fileMatch) {
-                const fileName = fileMatch[1];
-                content = `📄 File: ${fileName} (truncated - first 1000 chars)\n${content.substring(0, 1000)}...`;
-              } else {
-                content = content.substring(0, maxLength) + "...(truncated)";
-              }
-            }
-            
-            return {
-              role: msg.role,
-              content: content,
-            };
-          }),
-        ];
-
+        // Call backend chat API
         const targetModel =
           MODEL_CONFIG[selectedModel]?.id || MODEL_CONFIG[DEFAULT_MODEL].id;
 
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: targetModel,
-            messages: conversationMessages,
-            temperature: 0.7,
-            max_tokens: 800,
-          }),
+        const response = await axiosInstance.post("/api/chat", {
+          message: lastUserMessage,
+          chatId: activeChatId,
+          projectId: currentProject,
+          model: targetModel,
+          conversationHistory: recentMessages.map(msg => ({
+            role: msg.role,
+            content: msg.content.substring(0, 2000), // Limit message length
+          })),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error?.message || "API request failed");
+        if (response.data && response.data.reply) {
+          aiReply = response.data.reply;
+        } else {
+          throw new Error("No response from server");
         }
-
-        const data = await response.json();
-        aiReply = data.choices?.[0]?.message?.content || "Unable to generate response.";
       } catch (error) {
-        console.error("❌ OpenAI error:", error);
-        aiReply = `⚠️ Error: ${error.message}`;
+        console.error("❌ Chat API error:", error);
+        aiReply = `⚠️ Error: ${error.response?.data?.error || error.message || "Failed to get AI response. Please try again."}`;
       }
 
       // Add assistant's response

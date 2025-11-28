@@ -9,7 +9,7 @@ Globals:
     MemorySize: 512
     AutoPublishAlias: live
     Tracing: Active
-    CodeUri: .
+    CodeUri: 
     Environment:
       Variables:
         JWT_SECRET: !Ref JWTSecret
@@ -20,6 +20,7 @@ Globals:
         DB_NAME: !Ref DBName
         DB_PORT: !Ref DBPort
         DB_SSL: !Ref DBSSL
+        OPENAI_API_KEY: !Ref OpenAIApiKey
 
   Api:
     Cors:
@@ -61,6 +62,11 @@ Parameters:
     Default: "true"
     Description: Whether to enable SSL for DB connection (RDS typically uses true)
 
+  OpenAIApiKey:
+    Type: String
+    NoEcho: true
+    Description: OpenAI API key for chat functionality
+
 Resources:
   EvolvexApi:
     Type: AWS::Serverless::Api
@@ -101,6 +107,52 @@ Resources:
           Type: Api
           Properties:
             Path: /auth/verify
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+  ChatFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: function/ChatRoute/app.handler
+      Timeout: 30
+      MemorySize: 512
+      Environment:
+        Variables:
+          JWT_SECRET: !Ref JWTSecret
+          JWT_EXPIRES: !Ref JWTExpires
+          DB_HOST: !Ref DBHost
+          DB_USER: !Ref DBUser
+          DB_PASS: !Ref DBPassword
+          DB_NAME: !Ref DBName
+          DB_PORT: !Ref DBPort
+          DB_SSL: !Ref DBSSL
+          OPENAI_API_KEY: !Ref OpenAIApiKey
+      Events:
+        ChatOptions:
+          Type: Api
+          Properties:
+            Path: /api/chat
+            Method: OPTIONS
+            RestApiId: !Ref EvolvexApi
+
+        ChatPost:
+          Type: Api
+          Properties:
+            Path: /api/chat
+            Method: POST
+            RestApiId: !Ref EvolvexApi
+
+        ChatProjects:
+          Type: Api
+          Properties:
+            Path: /api/chat/projects
+            Method: GET
+            RestApiId: !Ref EvolvexApi
+
+        ChatByProject:
+          Type: Api
+          Properties:
+            Path: /api/chat/chats/{projectId}
             Method: GET
             RestApiId: !Ref EvolvexApi
 

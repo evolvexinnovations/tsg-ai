@@ -5,6 +5,7 @@ import Sidebar from "./components/sidebar";
 import ChatWindow from "./components/chatwindow";
 import ChatInput from "./components/chatinput";
 import Header from "./components/header";
+import Footer from "./components/footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/dashboard";
@@ -19,7 +20,7 @@ function MainApp() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        minHeight: "100vh",
         bgcolor: "grey.900",
         color: "white",
       }}
@@ -55,6 +56,7 @@ function MainApp() {
           <ChatInput />
         </Box>
       </Box>
+      <Footer />
     </Box>
   );
 }

@@ -18,6 +18,14 @@ app.use(
 
 app.use(express.json({ limit: "10mb" }));
 
+// Middleware to strip /api/chat prefix if present (API Gateway passes full path)
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/chat")) {
+    req.url = req.url.replace("/api/chat", "") || "/";
+  }
+  next();
+});
+
 // Chat routes (includes authentication middleware)
 app.use("/", chatRoutes);
 

@@ -7,12 +7,29 @@ import chatRoutes from "../../routes/chatRoutes.js";
 
 const app = express();
 
-// CORS - allow CloudFront origin (and adjust if needed)
+// CORS - allow both frontend domain and CloudFront origin
+const allowedOrigins = [
+  "https://www.tsg-ai.com",
+  "https://d39vxhtnjx9d1n.cloudfront.net",
+  "http://localhost:3000", // For local development
+];
+
 app.use(
   cors({
-    origin: "https://d39vxhtnjx9d1n.cloudfront.net",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // Log unexpected origin but allow it (API Gateway CORS also allows *)
+        console.warn(`Unexpected origin: ${origin}`);
+        callback(null, true);
+      }
+    },
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 

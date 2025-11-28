@@ -108,6 +108,7 @@ jobs:
           [ -z "${{ secrets.DB_NAME }}" ] && MISSING="${MISSING} DB_NAME"
           [ -z "${{ secrets.JWT_SECRET }}" ] && MISSING="${MISSING} JWT_SECRET"
           [ -z "${{ secrets.JWT_EXPIRES }}" ] && MISSING="${MISSING} JWT_EXPIRES"
+          [ -z "${{ secrets.OPENAI_API_KEY }}" ] && MISSING="${MISSING} OPENAI_API_KEY"
           
           if [ -n "$MISSING" ]; then
             echo "❌ ERROR: Missing required secrets:$MISSING"
@@ -127,7 +128,7 @@ jobs:
             --region ap-south-1 \
             --s3-bucket ${{ secrets.AWS_S3_BUCKET }} \
             --force-upload \
-            --parameter-overrides "JWTSecret=${{ secrets.JWT_SECRET }} JWTExpires=${{ secrets.JWT_EXPIRES }} DBHost=${{ secrets.DB_HOST }} DBUser=${{ secrets.DB_USER }} DBPassword=${{ secrets.DB_PASS }} DBName=${{ secrets.DB_NAME }} DBPort=5432 DBSSL=true"
+            --parameter-overrides "JWTSecret=${{ secrets.JWT_SECRET }} JWTExpires=${{ secrets.JWT_EXPIRES }} DBHost=${{ secrets.DB_HOST }} DBUser=${{ secrets.DB_USER }} DBPassword=${{ secrets.DB_PASS }} DBName=${{ secrets.DB_NAME }} DBPort=5432 DBSSL=true OpenAIApiKey=${{ secrets.OPENAI_API_KEY }}"
 
       - name: ✅ Confirm backend deployment
         run: echo "🎉 Backend deployed successfully to tsg-ai Main!"

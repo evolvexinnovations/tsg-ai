@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Send, Mic, Stop, AttachFile } from "@mui/icons-material";
 import { ChatContext } from "../context/chatcontext";
+import ModelSelector from "./modelselector";
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
@@ -71,12 +72,17 @@ export default function ChatInput() {
           bgcolor: "#2d2d2d",
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ flex: 1 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1.5}
+          sx={{ flex: 1 }}
+        >
           {/* 📎 Upload - DISABLED */}
           <Tooltip title="File upload disabled">
             <IconButton
               disabled
-              sx={{ 
+              sx={{
                 color: "#666666",
                 position: "relative",
                 cursor: "not-allowed",
@@ -105,6 +111,11 @@ export default function ChatInput() {
               {listening ? <Stop /> : <Mic />}
             </IconButton>
           </Tooltip>
+
+          {/* 🤖 Model Selector near input */}
+          <Box sx={{ display: "flex", alignItems: "center", mr: 1 }}>
+            <ModelSelector />
+          </Box>
 
           {/* 📝 Text Field */}
           <TextField

@@ -18,7 +18,6 @@ import { ChatContext } from "../context/chatcontext";
 
 export default function Sidebar() {
   const {
-    chats,
     currentChat,
     startNewChat,
     switchChat,
@@ -155,36 +154,41 @@ export default function Sidebar() {
             No chats yet. Start one!
           </Typography>
         ) : (
-          projectChats.map((chat) => (
-            <ListItem
-              key={chat.id}
-              disablePadding
-              sx={{
-                mb: 0.5,
-                borderRadius: "6px",
-                bgcolor:
-                  chat.id === currentChat
-                    ? "rgba(45, 212, 191, 0.15)"
-                    : "transparent",
-              }}
-            >
-              <ListItemButton onClick={() => switchChat(chat.id)}>
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{
-                        color:
-                          chat.id === currentChat ? "#5eead4" : "#e5e7eb",
-                        fontSize: "0.9rem",
-                        fontWeight:
-                          chat.id === currentChat ? "bold" : "normal",
-                      }}
-                    >
-                      {chat.title}
-                    </Typography>
-                  }
-                  secondary={
-                    chat.messages?.length > 0 ? (
+          projectChats.map((chat) => {
+            const project = projects.find((p) => p.id === chat.projectId);
+            const projectLabel = project
+              ? `Project: ${project.name}`
+              : "Project: None";
+
+            return (
+              <ListItem
+                key={chat.id}
+                disablePadding
+                sx={{
+                  mb: 0.5,
+                  borderRadius: "6px",
+                  bgcolor:
+                    chat.id === currentChat
+                      ? "rgba(45, 212, 191, 0.15)"
+                      : "transparent",
+                }}
+              >
+                <ListItemButton onClick={() => switchChat(chat.id)}>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        sx={{
+                          color:
+                            chat.id === currentChat ? "#5eead4" : "#e5e7eb",
+                          fontSize: "0.9rem",
+                          fontWeight:
+                            chat.id === currentChat ? "bold" : "normal",
+                        }}
+                      >
+                        {chat.title}
+                      </Typography>
+                    }
+                    secondary={
                       <Typography
                         sx={{
                           color: "#9ca3af",
@@ -193,45 +197,35 @@ export default function Sidebar() {
                         }}
                         noWrap
                       >
-                        {chat.messages[chat.messages.length - 1]?.content}
+                        {projectLabel}
                       </Typography>
-                    ) : (
-                      <Typography
-                        sx={{
-                          color: "#475569",
-                          fontSize: "0.75rem",
-                          mt: 0.5,
-                        }}
-                      >
-                        (No messages yet)
-                      </Typography>
-                    )
-                  }
-                />
-                <Tooltip title="Delete chat">
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (window.confirm("Delete this chat?"))
-                        deleteChat(chat.id);
-                    }}
-                    sx={{
-                      color: "#14b8a6",
-                      ml: 1,
-                      "&:hover": {
-                        color: "#5eead4",
-                        transform: "scale(1.15)",
-                      },
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    <DeleteOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </ListItemButton>
-            </ListItem>
-          ))
+                    }
+                  />
+                  <Tooltip title="Delete chat">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm("Delete this chat?"))
+                          deleteChat(chat.id);
+                      }}
+                      sx={{
+                        color: "#14b8a6",
+                        ml: 1,
+                        "&:hover": {
+                          color: "#5eead4",
+                          transform: "scale(1.15)",
+                        },
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemButton>
+              </ListItem>
+            );
+          })
         )}
       </List>
 

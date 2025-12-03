@@ -158,10 +158,13 @@ export const checkSkillgenieAccess = async (userId) => {
     const amount = typeof rawAmount === "number" ? rawAmount : Number(rawAmount || 0);
 
     let months = 0;
+    let tsgDays = 0; // TSG access days based on subscription
     if (amount === 7999) {
       months = 3;
+      tsgDays = 30; // 3 months subscription → 30 days TSG
     } else if (amount === 14999) {
       months = 6;
+      tsgDays = 45; // 6 months subscription → 45 days TSG
     } else {
       // Any other plan (e.g. 2999 for 1 month) is not allowed
       return { allowed: false, reason: "unsupported_plan" };
@@ -174,7 +177,8 @@ export const checkSkillgenieAccess = async (userId) => {
     let endDate = row[endDateColumn] ? new Date(row[endDateColumn]) : null;
     if (!endDate) {
       endDate = new Date(startDate);
-      endDate.setMonth(endDate.getMonth() + months);
+      // Use TSG days instead of subscription months for access duration
+      endDate.setDate(endDate.getDate() + tsgDays);
     }
 
     const now = new Date();

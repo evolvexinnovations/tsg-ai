@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getUserByEmail } from "../models/userModel.js";
+import { checkSkillgenieAccess } from "../models/skillgenieModel.js";
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -26,9 +27,23 @@ export const authenticate = async (req, res, next) => {
       });
     }
 
+    // Check if subscription/access is still valid (30/45 days not expired)
+    const skillgenieUserId = decoded.skillgenieUserId || user.skillgenie_user_id;
+    if (skillgenieUserId) {
+      const access = await checkSkillgenieAccess(skillgenieUserId);
+      if (!access?.allowed) {
+        return res.status(403).json({
+          success: false,
+          message: access?.reason === "expired" 
+            ? "Your subscription has expired. Please renew your subscription to continue using TSG AI."
+            : "Access denied. A valid subscription is required.",
+        });
+      }
+    }
+
     req.user = {
       ...user,
-      skillgenie_user_id: decoded.skillgenieUserId || user.skillgenie_user_id,
+      skillgenie_user_id: skillgenieUserId,
     };
     next();
   } catch (error) {

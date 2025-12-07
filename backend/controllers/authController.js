@@ -1,5 +1,11 @@
 import { verifySkillgenieUser, checkSkillgenieAccess } from "../models/skillgenieModel.js";
-import { invalidateUserSessions, createSession, getSessionById, deleteSession } from "../models/sessionModel.js";
+import {
+  createSessionsTable,
+  invalidateUserSessions,
+  createSession,
+  getSessionById,
+  deleteSession,
+} from "../models/sessionModel.js";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
@@ -41,6 +47,9 @@ export const login = async (req, res) => {
         message: "Skillgenie user is missing an email address.",
       });
     }
+
+    // Ensure sessions table exists (safe to call multiple times)
+    await createSessionsTable();
 
     // Invalidate all existing sessions for this user (single login enforcement)
     await invalidateUserSessions(skillgenieUser.id.toString());

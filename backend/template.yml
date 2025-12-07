@@ -110,6 +110,20 @@ Resources:
             Method: GET
             RestApiId: !Ref EvolvexApi
 
+        LogoutOptions:
+          Type: Api
+          Properties:
+            Path: /auth/logout
+            Method: OPTIONS
+            RestApiId: !Ref EvolvexApi
+
+        Logout:
+          Type: Api
+          Properties:
+            Path: /auth/logout
+            Method: POST
+            RestApiId: !Ref EvolvexApi
+
   ChatFunction:
     Type: AWS::Serverless::Function
     Properties:

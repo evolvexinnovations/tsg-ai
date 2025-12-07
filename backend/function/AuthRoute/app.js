@@ -3,7 +3,7 @@
 import express from "express";
 import serverless from "serverless-http";
 import cors from "cors";
-import { login, verifyToken } from "../../controllers/authController.js";
+import { login, verifyToken, logout } from "../../controllers/authController.js";
 
 const app = express();
 
@@ -39,6 +39,8 @@ app.use(express.json());
 app.options("/login", cors()); // handle preflight for /login
 app.options("/auth/login", cors()); // handle preflight for /auth/login
 app.options("/auth/verify", cors()); // handle preflight for /auth/verify
+app.options("/auth/logout", cors()); // handle preflight for /auth/logout
+app.options("/logout", cors()); // handle preflight for /logout
 
 // Support both /login and /auth/login for compatibility with API mappings
 app.post("/login", login);
@@ -47,6 +49,10 @@ app.post("/auth/login", login);
 // Support both /verify and /auth/verify
 app.get("/verify", verifyToken);
 app.get("/auth/verify", verifyToken);
+
+// Support both /logout and /auth/logout
+app.post("/logout", logout);
+app.post("/auth/logout", logout);
 
 // Export Lambda-compatible handler
 export const handler = serverless(app);

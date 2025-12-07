@@ -74,7 +74,12 @@ export default function Login() {
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "#000000",
-        background: "linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%)",
+        background:
+          "radial-gradient(circle at top left, rgba(255,215,0,0.18), transparent 55%)," +
+          "radial-gradient(circle at bottom right, rgba(255,165,0,0.15), transparent 55%)," +
+          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <Container maxWidth="sm">
@@ -82,10 +87,11 @@ export default function Login() {
           elevation={10}
           sx={{
             p: 4,
-            bgcolor: "grey.800",
+            bgcolor: "rgba(10,10,10,0.96)",
             borderRadius: 3,
             border: "1px solid",
-            borderColor: "grey.700",
+            borderColor: "#FFD700",
+            boxShadow: "0 0 25px rgba(255,215,0,0.18)",
           }}
         >
           <Box sx={{ textAlign: "center", mb: 3 }}>

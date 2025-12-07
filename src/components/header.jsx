@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import ModelSelector from "./modelselector";
 // Logo is in public folder for production builds
-const logo = "/logo.png";
+const logo = "/logogold.png";
 
 export default function Header() {
   const { logout, user } = useAuth();

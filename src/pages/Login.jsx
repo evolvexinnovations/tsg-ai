@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../context/authContext";
 // Logo is in public folder for production builds
-const logo = "/logo.png";
+const logo = "/logogold.png";
 
 export default function Login() {
   const [identifier, setIdentifier] = useState("");

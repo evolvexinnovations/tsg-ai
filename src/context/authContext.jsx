@@ -64,10 +64,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("authToken");
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      // Call backend logout to invalidate session
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          await axiosInstance.post("/auth/logout");
+        } catch (error) {
+          // Even if logout fails, continue with local cleanup
+          console.error("Logout error:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always clear local storage and state
+      localStorage.removeItem("authToken");
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const value = {

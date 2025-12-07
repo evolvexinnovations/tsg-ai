@@ -1,4 +1,5 @@
 import { verifySkillgenieUser, checkSkillgenieAccess } from "../models/skillgenieModel.js";
+import { invalidateUserSessions, createSession, getSessionById, deleteSession } from "../models/sessionModel.js";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
@@ -41,11 +42,22 @@ export const login = async (req, res) => {
       });
     }
 
+    // Invalidate all existing sessions for this user (single login enforcement)
+    await invalidateUserSessions(skillgenieUser.id.toString());
+
+    // Create a new session
+    const session = await createSession(
+      skillgenieUser.id.toString(),
+      normalizedEmail,
+      7 // 7 days expiration
+    );
+
     const token = jwt.sign(
       {
         email: normalizedEmail,
         skillgenieUserId: skillgenieUser.id.toString(),
         username: skillgenieUser.username || null,
+        sessionId: session.session_id, // Include session ID in token
       },
       process.env.JWT_SECRET || "your-secret-key-change-in-production",
       { expiresIn: "7d" }
@@ -85,6 +97,14 @@ export const verifyToken = async (req, res) => {
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
 
+    // Verify session is still valid
+    if (decoded.sessionId) {
+      const session = await getSessionById(decoded.sessionId);
+      if (!session) {
+        return res.json({ valid: false });
+      }
+    }
+
     // Re-check access on verify to ensure subscription is still valid
     const access = await checkSkillgenieAccess(decoded.skillgenieUserId);
 
@@ -103,5 +123,48 @@ export const verifyToken = async (req, res) => {
   } catch (error) {
     console.error("Token verification error:", error);
     res.json({ valid: false });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+
+    // If no token provided, just return success (nothing to logout)
+    if (!token) {
+      return res.json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    }
+
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "your-secret-key-change-in-production"
+      );
+
+      // Delete the session from database
+      if (decoded.sessionId) {
+        await deleteSession(decoded.sessionId);
+      }
+
+      res.json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    } catch (error) {
+      // Even if token is invalid or expired, return success (token might already be expired)
+      res.json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };

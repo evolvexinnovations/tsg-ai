@@ -133,7 +133,7 @@ export default function Subscriptions() {
         component="h1"
         gutterBottom
         sx={{
-          color: "#5eead4",
+          color: "#FFD700",
           fontWeight: 700,
           mb: 4,
         }}
@@ -152,15 +152,15 @@ export default function Subscriptions() {
         <Grid item xs={12}>
           <Card
             sx={{
-              background: "linear-gradient(135deg, #0f2027 0%, #203a43 100%)",
-              border: "1px solid #1b3b45",
+              background: "linear-gradient(135deg, #000000 0%, #1a1a1a 100%)",
+              border: "1px solid #FFD700",
             }}
           >
             <CardContent>
               <Typography
                 variant="h6"
                 gutterBottom
-                sx={{ color: "#5eead4", mb: 2 }}
+                sx={{ color: "#FFD700", mb: 2 }}
               >
                 Current Subscription
               </Typography>
@@ -203,7 +203,7 @@ export default function Subscriptions() {
         component="h2"
         gutterBottom
         sx={{
-          color: "#5eead4",
+          color: "#FFD700",
           fontWeight: 600,
           mb: 2,
           display: "flex",
@@ -220,8 +220,8 @@ export default function Subscriptions() {
           sx={{
             p: 4,
             textAlign: "center",
-            background: "#0f2027",
-            border: "1px solid #1b3b45",
+            background: "#1a1a1a",
+            border: "1px solid #FFD700",
           }}
         >
           <Typography variant="body1" sx={{ color: "#9ca3af" }}>
@@ -232,33 +232,33 @@ export default function Subscriptions() {
         <TableContainer
           component={Paper}
           sx={{
-            background: "#0f2027",
-            border: "1px solid #1b3b45",
+            background: "#1a1a1a",
+            border: "1px solid #FFD700",
             maxHeight: "600px",
           }}
         >
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Date
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Plan
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Amount
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Status
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Start Date
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   End Date
                 </TableCell>
-                <TableCell sx={{ color: "#5eead4", fontWeight: 600 }}>
+                <TableCell sx={{ color: "#FFD700", fontWeight: 600 }}>
                   Transaction ID
                 </TableCell>
               </TableRow>
@@ -269,7 +269,7 @@ export default function Subscriptions() {
                   key={payment.id || index}
                   sx={{
                     "&:hover": {
-                      backgroundColor: "rgba(94, 234, 212, 0.05)",
+                      backgroundColor: "rgba(255, 215, 0, 0.1)",
                     },
                   }}
                 >

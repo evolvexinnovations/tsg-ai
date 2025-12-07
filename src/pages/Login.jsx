@@ -61,7 +61,7 @@ export default function Login() {
           bgcolor: "grey.900",
         }}
       >
-        <CircularProgress sx={{ color: "#5eead4" }} />
+        <CircularProgress sx={{ color: "#FFD700" }} />
       </Box>
     );
   }
@@ -73,8 +73,8 @@ export default function Login() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "grey.900",
-        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+        bgcolor: "#000000",
+        background: "linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%)",
       }}
     >
       <Container maxWidth="sm">
@@ -156,12 +156,12 @@ export default function Login() {
               variant="contained"
               disabled={loading}
               sx={{
-                bgcolor: "#5eead4",
-                color: "#0f2027",
+                bgcolor: "#FFD700",
+                color: "#000000",
                 fontWeight: 600,
                 py: 1.5,
                 "&:hover": {
-                  bgcolor: "#2dd4bf",
+                  bgcolor: "#FFA500",
                 },
                 "&:disabled": {
                   bgcolor: "grey.700",

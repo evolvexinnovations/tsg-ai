@@ -23,7 +23,7 @@ export default function Dashboard() {
           sx={{
             bgcolor: "grey.800",
             borderBottom: "1px solid",
-            borderColor: "grey.700",
+            borderColor: "#FFD700",
             zIndex: 1000,
           }}
         >

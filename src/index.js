@@ -8,8 +8,8 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    background: { default: "#121212", paper: "#1e1e1e" },
-    primary: { main: "#a855f7" },
+    background: { default: "#000000", paper: "#1a1a1a" },
+    primary: { main: "#FFD700" }, // Gold
   },
   typography: {
     fontFamily: "'Inter', 'Roboto', sans-serif",

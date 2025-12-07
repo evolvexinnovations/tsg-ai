@@ -4,16 +4,24 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Check if API key is configured
-if (!process.env.OPENAI_API_KEY) {
-  console.warn("⚠️ WARNING: OPENAI_API_KEY is not set in environment variables");
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey || apiKey.trim() === "") {
+  console.error("❌ ERROR: OPENAI_API_KEY is not set in environment variables");
+  console.error("   Please create a .env file in the backend directory with:");
+  console.error("   OPENAI_API_KEY=your-api-key-here");
 }
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: apiKey,
 });
 
 export const getAIResponse = async (prompt, model = "gpt-4o-mini", conversationHistory = []) => {
   try {
+    // Validate API key before making request
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === "") {
+      throw new Error("API key not configured");
+    }
+
     // Build messages array with system prompt and conversation history
     const messages = [
       {

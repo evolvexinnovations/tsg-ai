@@ -136,16 +136,16 @@ export default function ChatInput() {
 
           {/* 📤 Send */}
           {isProcessing ? (
-            <CircularProgress size={28} sx={{ color: "#1976d2", ml: 1 }} />
+            <CircularProgress size={28} sx={{ color: "#FFD700", ml: 1 }} />
           ) : (
             <Tooltip title="Send">
               <IconButton
                 onClick={handleSend}
                 disabled={isProcessing}
                 sx={{
-                  bgcolor: "#1976d2",
-                  color: "white",
-                  "&:hover": { bgcolor: "#1565c0" },
+                  bgcolor: "#FFD700",
+                  color: "#000000",
+                  "&:hover": { bgcolor: "#FFA500" },
                   "&:disabled": { bgcolor: "#888888", color: "#cccccc" },
                   borderRadius: 2,
                 }}

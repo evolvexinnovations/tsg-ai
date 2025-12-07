@@ -17,7 +17,7 @@ export default function ProtectedRoute({ children }) {
           bgcolor: "grey.900",
         }}
       >
-        <CircularProgress sx={{ color: "#5eead4" }} />
+        <CircularProgress sx={{ color: "#FFD700" }} />
       </Box>
     );
   }

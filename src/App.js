@@ -21,7 +21,7 @@ function MainApp() {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        bgcolor: "grey.900",
+        bgcolor: "#000000",
         color: "white",
       }}
     >
@@ -36,7 +36,7 @@ function MainApp() {
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            borderLeft: "1px solid #333",
+            borderLeft: "1px solid #FFD700",
           }}
         >
           <ChatWindow messages={messages} />
@@ -45,7 +45,7 @@ function MainApp() {
               sx={{
                 textAlign: "center",
                 py: 1,
-                color: "cyan.300",
+                color: "#FFD700",
                 fontStyle: "italic",
                 fontSize: "0.9rem",
               }}

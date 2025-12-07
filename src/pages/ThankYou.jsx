@@ -36,8 +36,8 @@ export default function ThankYou() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "grey.900",
-        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+        bgcolor: "#000000",
+        background: "linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%)",
       }}
     >
       <Container maxWidth="sm">
@@ -55,7 +55,7 @@ export default function ThankYou() {
           <CheckCircleIcon
             sx={{
               fontSize: 80,
-              color: "#5eead4",
+              color: "#FFD700",
               mb: 3,
             }}
           />
@@ -63,10 +63,10 @@ export default function ThankYou() {
           <Typography
             variant="h4"
             sx={{
-              color: "#5eead4",
+              color: "#FFD700",
               fontWeight: 700,
               mb: 2,
-              textShadow: "0 0 8px rgba(94, 234, 212, 0.4)",
+              textShadow: "0 0 8px rgba(255, 215, 0, 0.4)",
             }}
           >
             Thank You!
@@ -97,13 +97,13 @@ export default function ThankYou() {
             variant="contained"
             onClick={() => navigate("/login")}
             sx={{
-              bgcolor: "#5eead4",
-              color: "#0f2027",
+              bgcolor: "#FFD700",
+              color: "#000000",
               fontWeight: 600,
               px: 4,
               py: 1.5,
               "&:hover": {
-                bgcolor: "#2dd4bf",
+                bgcolor: "#FFA500",
               },
             }}
           >

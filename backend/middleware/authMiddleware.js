@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { getUserByEmail } from "../models/userModel.js";
 import { checkSkillgenieAccess } from "../models/skillgenieModel.js";
+import { getSessionById } from "../models/sessionModel.js";
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -17,6 +18,23 @@ export const authenticate = async (req, res, next) => {
       token,
       process.env.JWT_SECRET || "your-secret-key-change-in-production"
     );
+
+    // Verify session is still valid (single login enforcement)
+    if (decoded.sessionId) {
+      const session = await getSessionById(decoded.sessionId);
+      if (!session) {
+        return res.status(401).json({
+          success: false,
+          message: "Session expired or invalid. Please login again.",
+        });
+      }
+    } else {
+      // Old tokens without sessionId are invalid
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token. Please login again.",
+      });
+    }
 
     const user = await getUserByEmail(decoded.email);
 

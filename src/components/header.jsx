@@ -22,9 +22,9 @@ export default function Header() {
   return (
     <header
       style={{
-        background: "linear-gradient(90deg, #0f2027, #203a43, #2c5364)", // teal-blue gradient
-        borderBottom: "1px solid #1b3b45",
-        boxShadow: "0 1px 6px rgba(0, 255, 255, 0.08)",
+        background: "linear-gradient(90deg, #000000, #1a1a1a, #2d2d2d)", // black gradient
+        borderBottom: "1px solid #FFD700",
+        boxShadow: "0 1px 6px rgba(255, 215, 0, 0.2)",
         zIndex: 1000,
         display: "flex",
         alignItems: "center",
@@ -90,11 +90,11 @@ export default function Header() {
           variant="outlined"
           size="small"
           sx={{
-            color: "#5eead4",
-            borderColor: "#5eead4",
+            color: "#FFD700",
+            borderColor: "#FFD700",
             "&:hover": {
-              borderColor: "#2dd4bf",
-              bgcolor: "rgba(94, 234, 212, 0.1)",
+              borderColor: "#FFA500",
+              bgcolor: "rgba(255, 215, 0, 0.1)",
             },
           }}
         >

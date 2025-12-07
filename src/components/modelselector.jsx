@@ -64,7 +64,7 @@ export default function ModelSelector() {
           px: 2,
           py: 1,
         }}
-        startIcon={<SmartToy sx={{ color: "#b366ff" }} />}
+        startIcon={<SmartToy sx={{ color: "#FFD700" }} />}
       >
         <span style={{ fontSize: "14px" }}>{selectedModel}</span>
       </Button>
@@ -89,12 +89,12 @@ export default function ModelSelector() {
             selected={selectedModel === model.name}
             sx={{
               bgcolor:
-                selectedModel === model.name ? "rgba(179, 102, 255, 0.2)" : "transparent",
-              "&:hover": { bgcolor: "rgba(179, 102, 255, 0.15)" },
+                selectedModel === model.name ? "rgba(255, 215, 0, 0.2)" : "transparent",
+              "&:hover": { bgcolor: "rgba(255, 215, 0, 0.15)" },
               py: 1.5,
             }}
           >
-            <ListItemIcon sx={{ color: "#b366ff", minWidth: 0, mr: 1.5 }}>
+            <ListItemIcon sx={{ color: "#FFD700", minWidth: 0, mr: 1.5 }}>
               <span style={{ fontSize: "18px" }}>{model.icon}</span>
             </ListItemIcon>
             <ListItemText
@@ -104,7 +104,7 @@ export default function ModelSelector() {
               secondaryTypographyProps={{ sx: { fontSize: "12px", color: "#888" } }}
             />
             {selectedModel === model.name && (
-              <span style={{ marginLeft: "10px", color: "#4ade80", fontWeight: "bold" }}>✓</span>
+              <span style={{ marginLeft: "10px", color: "#FFD700", fontWeight: "bold" }}>✓</span>
             )}
           </MenuItem>
         ))}

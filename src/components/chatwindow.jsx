@@ -57,10 +57,12 @@ export default function ChatWindow({ messages = [] }) {
                 <Avatar
                   sx={{
                     bgcolor:
-                      msg.role === "user" ? "primary.main" : "grey.700",
+                      msg.role === "user" ? "#FFD700" : "#1a1a1a",
+                    color: msg.role === "user" ? "#000000" : "#FFD700",
                     width: 32,
                     height: 32,
                     fontSize: 14,
+                    border: msg.role === "user" ? "none" : "1px solid #FFD700",
                   }}
                 >
                   {msg.role === "user" ? "U" : "AI"}
@@ -73,8 +75,8 @@ export default function ChatWindow({ messages = [] }) {
                     p: 2,
                     maxWidth: "75%",
                     bgcolor:
-                      msg.role === "user" ? "primary.main" : "grey.800",
-                    color: "white",
+                      msg.role === "user" ? "#FFD700" : "#1a1a1a",
+                    color: msg.role === "user" ? "#000000" : "#FFD700",
                     borderRadius: 3,
                     borderBottomRightRadius:
                       msg.role === "user" ? 0 : 3,
@@ -83,6 +85,7 @@ export default function ChatWindow({ messages = [] }) {
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
                     fontSize: "0.95rem",
+                    border: msg.role === "assistant" ? "1px solid #FFD700" : "none",
                   }}
                 >
                   <ReactMarkdown
@@ -141,10 +144,12 @@ export default function ChatWindow({ messages = [] }) {
               >
                 <Avatar
                   sx={{
-                    bgcolor: "grey.700",
+                    bgcolor: "#1a1a1a",
+                    color: "#FFD700",
                     width: 32,
                     height: 32,
                     fontSize: 14,
+                    border: "1px solid #FFD700",
                   }}
                 >
                   AI
@@ -154,16 +159,17 @@ export default function ChatWindow({ messages = [] }) {
                   sx={{
                     p: 2,
                     maxWidth: "75%",
-                    bgcolor: "grey.800",
-                    color: "white",
+                    bgcolor: "#1a1a1a",
+                    color: "#FFD700",
                     borderRadius: 3,
                     borderBottomLeftRadius: 0,
                     display: "flex",
                     alignItems: "center",
                     gap: 1.5,
+                    border: "1px solid #FFD700",
                   }}
                 >
-                  <CircularProgress size={18} sx={{ color: "#1976d2" }} />
+                  <CircularProgress size={18} sx={{ color: "#FFD700" }} />
                   <Typography sx={{ fontSize: "0.95rem", fontStyle: "italic" }}>
                     {processingMessage}
                   </Typography>

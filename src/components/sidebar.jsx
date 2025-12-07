@@ -49,13 +49,14 @@ export default function Sidebar() {
       sx={{
         width: 260,
         height: "100vh",
-        bgcolor: "linear-gradient(180deg, #0f2027, #1a2f33, #13282e)",
+        bgcolor: "#000000",
+        background: "linear-gradient(180deg, #000000, #1a1a1a, #0a0a0a)",
         color: "white",
         display: "flex",
         flexDirection: "column",
         p: 2,
-        borderRight: "1px solid #1b3b45",
-        boxShadow: "4px 0 10px rgba(0, 255, 255, 0.05)",
+        borderRight: "1px solid #FFD700",
+        boxShadow: "4px 0 10px rgba(255, 215, 0, 0.1)",
       }}
     >
       {/* 🟣 New Chat */}
@@ -66,11 +67,11 @@ export default function Sidebar() {
         onClick={handleNewChat}
         sx={{
           mb: 2,
-          background: "linear-gradient(90deg, #0d9488, #14b8a6)",
-          "&:hover": { background: "linear-gradient(90deg, #0f766e, #0d9488)" },
+          background: "linear-gradient(90deg, #FFD700, #FFA500)",
+          "&:hover": { background: "linear-gradient(90deg, #DAA520, #FFD700)" },
           textTransform: "none",
           fontWeight: 600,
-          color: "#e0fdfa",
+          color: "#000000",
         }}
       >
         New Chat
@@ -83,11 +84,11 @@ export default function Sidebar() {
         onClick={handleCreateProject}
         sx={{
           mb: 2,
-          color: "#5eead4",
-          borderColor: "#164e63",
+          color: "#FFD700",
+          borderColor: "#FFD700",
           "&:hover": {
-            borderColor: "#5eead4",
-            backgroundColor: "rgba(45, 212, 191, 0.05)",
+            borderColor: "#FFA500",
+            backgroundColor: "rgba(255, 215, 0, 0.1)",
           },
           textTransform: "none",
         }}
@@ -104,9 +105,9 @@ export default function Sidebar() {
           setCurrentProject(val);
         }}
         style={{
-          background: "#0f2027",
-          color: "#d1fae5",
-          border: "1px solid #1b3b45",
+          background: "#1a1a1a",
+          color: "#FFD700",
+          border: "1px solid #FFD700",
           borderRadius: "6px",
           padding: "8px",
           marginBottom: "15px",
@@ -121,12 +122,12 @@ export default function Sidebar() {
         ))}
       </select>
 
-      <Divider sx={{ borderColor: "#1b3b45", mb: 1 }} />
+      <Divider sx={{ borderColor: "#FFD700", mb: 1 }} />
       <Typography
         variant="subtitle2"
         sx={{
           mb: 1,
-          color: "#5eead4",
+          color: "#FFD700",
           textTransform: "uppercase",
           letterSpacing: "0.5px",
         }}
@@ -141,7 +142,7 @@ export default function Sidebar() {
           overflowY: "auto",
           "&::-webkit-scrollbar": { width: "6px" },
           "&::-webkit-scrollbar-thumb": {
-            background: "#134e4a",
+            background: "#FFD700",
             borderRadius: "3px",
           },
         }}
@@ -169,7 +170,7 @@ export default function Sidebar() {
                   borderRadius: "6px",
                   bgcolor:
                     chat.id === currentChat
-                      ? "rgba(45, 212, 191, 0.15)"
+                      ? "rgba(255, 215, 0, 0.15)"
                       : "transparent",
                 }}
               >
@@ -179,7 +180,7 @@ export default function Sidebar() {
                       <Typography
                         sx={{
                           color:
-                            chat.id === currentChat ? "#5eead4" : "#e5e7eb",
+                            chat.id === currentChat ? "#FFD700" : "#e5e7eb",
                           fontSize: "0.9rem",
                           fontWeight:
                             chat.id === currentChat ? "bold" : "normal",
@@ -210,10 +211,10 @@ export default function Sidebar() {
                           deleteChat(chat.id);
                       }}
                       sx={{
-                        color: "#14b8a6",
+                        color: "#FFA500",
                         ml: 1,
                         "&:hover": {
-                          color: "#5eead4",
+                          color: "#FFD700",
                           transform: "scale(1.15)",
                         },
                         transition: "all 0.2s ease",
@@ -229,12 +230,12 @@ export default function Sidebar() {
         )}
       </List>
 
-      <Divider sx={{ borderColor: "#1b3b45", mt: 1, mb: 1 }} />
+      <Divider sx={{ borderColor: "#FFD700", mt: 1, mb: 1 }} />
       <Typography
         variant="caption"
         sx={{
           textAlign: "center",
-          color: "#5eead4",
+          color: "#FFD700",
           mt: 1,
           fontSize: "0.7rem",
         }}

@@ -74,10 +74,16 @@ export default function Login() {
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "#000000",
-        background:
-          "radial-gradient(circle at top left, rgba(255,215,0,0.18), transparent 55%)," +
-          "radial-gradient(circle at bottom right, rgba(255,165,0,0.15), transparent 55%)," +
-          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%)",
+        backgroundImage:
+          // Soft gold light + vignette + login illustration
+          "radial-gradient(circle at top left, rgba(255,215,0,0.25), transparent 55%)," +
+          "radial-gradient(circle at bottom right, rgba(255,165,0,0.18), transparent 55%)," +
+          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%)," +
+          "url('/login.png')",
+        backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
+        backgroundSize: "800px auto, 700px auto, cover, contain",
+        backgroundPosition:
+          "top left, bottom right, center center, right 8% center",
         position: "relative",
         overflow: "hidden",
       }}

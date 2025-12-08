@@ -3,23 +3,24 @@ import OpenAI from "openai";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Check if API key is configured
+// Read API key from environment (Lambda or local .env)
 const apiKey = process.env.OPENAI_API_KEY;
+
 if (!apiKey || apiKey.trim() === "") {
   console.error("❌ ERROR: OPENAI_API_KEY is not set in environment variables");
-  console.error("   Please create a .env file in the backend directory with:");
-  console.error("   OPENAI_API_KEY=your-api-key-here");
+} else {
+  console.log("✅ OPENAI_API_KEY detected in environment (length:", apiKey.length, ")");
 }
 
 const client = new OpenAI({
-  apiKey: apiKey,
+  apiKey,
 });
 
 export const getAIResponse = async (prompt, model = "gpt-4o-mini", conversationHistory = []) => {
   try {
     // Validate API key before making request
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === "") {
-      throw new Error("API key not configured");
+    if (!apiKey || apiKey.trim() === "") {
+      throw new Error("API key not configured in environment");
     }
 
     // Build messages array with system prompt and conversation history
@@ -56,11 +57,18 @@ export const getAIResponse = async (prompt, model = "gpt-4o-mini", conversationH
 
     return completion.choices[0].message.content.trim();
   } catch (error) {
-    console.error("OpenAI Error:", error);
-    
+    console.error("OpenAI Error:", {
+      message: error.message,
+      status: error.status,
+      type: error.type,
+    });
+
     // Provide helpful error messages
     if (error.message?.includes("API key") || error.status === 401) {
-      return "⚠️ OpenAI API key is not configured or invalid. Please set OPENAI_API_KEY in your backend .env file.";
+      if (!apiKey || apiKey.trim() === "") {
+        return "⚠️ OpenAI API key is not configured in the server environment. Ensure OPENAI_API_KEY is set in Lambda env variables.";
+      }
+      return "⚠️ OpenAI API key appears invalid or unauthorized. Please update the OPENAI_API_KEY secret and redeploy.";
     }
     
     if (error.message?.includes("rate limit")) {

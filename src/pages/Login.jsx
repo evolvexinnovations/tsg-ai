@@ -11,6 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useAuth } from "../context/authContext";
+import Footer from "../components/footer";
 // Logo is in public folder for production builds
 const logo = "/logogold.png";
 
@@ -71,56 +72,57 @@ export default function Login() {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
         bgcolor: "#000000",
         backgroundImage:
-          // Soft gold light + vignette + login illustration
-          "radial-gradient(circle at top left, rgba(255,215,0,0.25), transparent 55%)," +
-          "radial-gradient(circle at bottom right, rgba(255,165,0,0.18), transparent 55%)," +
-          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%)," +
-          "url('/login.png')",
-        backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
-        backgroundSize: "800px auto, 700px auto, cover, contain",
-        backgroundPosition:
-          "top left, bottom right, center center, right 8% center",
-        position: "relative",
-        overflow: "hidden",
+          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%), url('/login.png')",
+        backgroundRepeat: "no-repeat, no-repeat",
+        backgroundSize: "cover, 700px auto",
+        backgroundPosition: "center center, right 8% center",
       }}
     >
-      <Container maxWidth="sm">
-        <Paper
-          elevation={10}
-          sx={{
-            p: 4,
-            bgcolor: "rgba(10,10,10,0.96)",
-            borderRadius: 3,
-            border: "1px solid",
-            borderColor: "#FFD700",
-            boxShadow: "0 0 25px rgba(255,215,0,0.18)",
-          }}
-        >
-          <Box sx={{ textAlign: "center", mb: 3 }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                mb: 2,
-              }}
-            >
-              <img
-                src={logo}
-                alt="TSG AI"
-                style={{
-                  height: "60px",
-                  width: "auto",
+      {/* Centered login card */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Container maxWidth="sm">
+          <Paper
+            elevation={10}
+            sx={{
+              p: 4,
+              bgcolor: "rgba(10,10,10,0.96)",
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "#FFD700",
+              boxShadow: "0 0 25px rgba(255,215,0,0.18)",
+            }}
+          >
+            <Box sx={{ textAlign: "center", mb: 3 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mb: 2,
                 }}
-              />
+              >
+                <img
+                  src={logo}
+                  alt="TSG AI"
+                  style={{
+                    height: "60px",
+                    width: "auto",
+                  }}
+                />
+              </Box>
+              <Typography variant="body2" sx={{ color: "grey.400" }}>
+                Sign in with your Skillgenie email or username
+              </Typography>
             </Box>
-            <Typography variant="body2" sx={{ color: "grey.400" }}>
-              Sign in with your Skillgenie email or username
-            </Typography>
-          </Box>
 
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -189,8 +191,12 @@ export default function Login() {
               Use your Skillgenie credentials to access TSG AI.
             </Typography>
           </Box>
-        </Paper>
-      </Container>
+          </Paper>
+        </Container>
+      </Box>
+
+      {/* Footer for login page */}
+      <Footer />
     </Box>
   );
 }

@@ -74,11 +74,15 @@ export default function Login() {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#000000",
+        // Background: full-screen illustration + subtle gold/dark overlay
         backgroundImage:
-          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%), url('/login.png')",
-        backgroundRepeat: "no-repeat, no-repeat",
-        backgroundSize: "cover, 700px auto",
-        backgroundPosition: "center center, right 8% center",
+          "url('/login.png'), " +
+          "radial-gradient(circle at top, rgba(255,215,0,0.18), transparent 60%), " +
+          "linear-gradient(135deg, #000000 0%, #050505 40%, #1a1a1a 70%, #000000 100%)",
+        backgroundRepeat: "no-repeat, no-repeat, no-repeat",
+        backgroundSize: "cover, 140% 140%, cover",
+        backgroundPosition: "center center, top center, center center",
+        backgroundBlendMode: "normal, soft-light, normal",
       }}
     >
       {/* Centered login card */}

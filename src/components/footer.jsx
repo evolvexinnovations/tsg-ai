@@ -19,7 +19,7 @@ export default function Footer() {
       }}
     >
       <Typography variant="caption" sx={{ textAlign: "center" }}>
-        Powered By <strong>Evolve X Innovations</strong> &copy; All Rights Reserved
+        All Rights Reserved by <strong>Evolve X Innovations</strong>
       </Typography>
     </Box>
   );
